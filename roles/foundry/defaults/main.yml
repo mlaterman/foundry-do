@@ -1,0 +1,14 @@
+foundry_user: foundry
+foundry_backup_user: foundry_backup
+foundry_group: foundry
+foundry_dir: /usr/local/foundry-vtt
+foundry_file:
+foundry_domain:
+foundry_key:
+
+foundry_backup_tool_path: /usr/local/spacesbackup
+foundry_backup_space:
+foundry_backup_region:
+foundry_backup_url:
+foundry_space_key:
+foundry_space_secret:

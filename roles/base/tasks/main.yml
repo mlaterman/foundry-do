@@ -1,0 +1,17 @@
+- name: install unattended-upgrades
+  package:
+    name: unattended-upgrades
+    state: present
+  become: yes
+
+- name: copy unattended-upgrades config
+  copy:
+    src: 50unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    mode: 0644
+
+- name: copy unattended-upgrades actions
+  copy:
+    src: 20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    mode: 0644

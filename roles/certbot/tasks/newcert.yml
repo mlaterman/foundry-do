@@ -1,0 +1,43 @@
+- name: link default
+  file:
+    path: /etc/nginx/sites-enabled/default
+    src: /etc/nginx/sites-available/default
+    state: link
+  become: yes
+
+- name: unlink foundry
+  file:
+    path: /etc/nginx/sites-enabled/foundryvtt
+    state: absent
+  become: yes
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes
+
+- name: get certs
+  command: /snap/bin/certbot --nginx --agree-tos --email="{{ certbot_email }}" --domains="{{ certbot_domain }}" -n
+  args:
+    creates: "/etc/letsencrypt/live/{{ certbot_domain }}//fullchain.pem"
+  when: not cert.stat.exists
+
+- name: link foundry
+  file:
+    path: /etc/nginx/sites-enabled/foundryvtt
+    src: /etc/nginx/sites-available/foundryvtt
+    state: link
+  become: yes
+
+- name: unlink default
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  become: yes
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes

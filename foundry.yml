@@ -1,0 +1,14 @@
+- hosts: foundry
+  vars:
+    nginx_domain: "{{ domain }}"
+    certbot_domain: "{{ domain }}"
+    foundry_domain: "{{ domain }}"
+  pre_tasks:
+    - copy:
+        src: "./{{ foundry_file }}"
+        dest: "/tmp/{{ foundry_file }}"
+  roles:
+    - base
+    - nginx
+    - certbot
+    - foundry

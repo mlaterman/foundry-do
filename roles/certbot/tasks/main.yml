@@ -1,0 +1,19 @@
+- name: install certbot snap
+  snap:
+    name: certbot
+    classic: yes
+    state: present
+  become: yes
+
+- name: check if key is present
+  stat:
+    path: "/etc/letsencrypt/live/{{ certbot_domain }}//fullchain.pem"
+  register: cert
+  become: yes
+
+- name: renew existing cert
+  command: /snap/bin/certbot renew
+  when: cert.stat.exists
+
+- import_tasks: newcert.yml
+  when: not cert.stat.exists

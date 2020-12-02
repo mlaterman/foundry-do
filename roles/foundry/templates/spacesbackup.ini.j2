@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[space]
+name   = {{ foundry_backup_space }}
+region = {{ foundry_backup_region }}
+url    = https://{{ foundry_backup_url }}
+path   = foundry
+
+[backup]
+path = /home/{{ foundry_user }}/FoundryVTT/Data

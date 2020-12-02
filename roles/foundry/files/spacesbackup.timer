@@ -1,0 +1,11 @@
+[Unit]
+Description=Run spaces backup each day
+Requires=spacesbackup.service
+
+[Timer]
+Unit=spacesbackup.service
+OnUnitInactiveSec=24h
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

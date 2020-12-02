@@ -1,0 +1,2 @@
+nginx_domain:
+nginx_cert_path: /etc/letsencrypt/live

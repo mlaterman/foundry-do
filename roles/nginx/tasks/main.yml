@@ -1,0 +1,32 @@
+- name: install nginx
+  package:
+    name: nginx
+    state: present
+  become: yes
+
+- name: remove default site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: copy foundryvtt config
+  template:
+    src: foundryvtt.j2
+    dest: /etc/nginx/sites-available/foundryvtt
+    mode: 0644
+  notify: restart nginx
+
+- name: link foundryvtt
+  file:
+    path: /etc/nginx/sites-enabled/foundryvtt
+    src: /etc/nginx/sites-available/foundryvtt
+    state: link
+  become: yes
+  notify: restart nginx
+
+- name: enable nginx
+  service:
+    name: nginx
+    enabled: yes
+  become: yes

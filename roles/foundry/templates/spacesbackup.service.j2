@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+[Unit]
+Description=FoundryVTT backup script
+After=foundryvtt.service
+
+[Service]
+Type=simple
+EnvironmentFile=/home/{{ foundry_backup_user }}/.env
+WorkingDirectory={{ foundry_backup_tool_path}}
+ExecStart={{ foundry_backup_tool_path}}/venv/bin/python3 {{ foundry_backup_tool_path}}/spacesbackup.py --backup
+User={{ foundry_backup_user }}
+Group={{ foundry_group }}
+
+[Install]
+WantedBy=multi-user.target

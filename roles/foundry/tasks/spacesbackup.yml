@@ -1,0 +1,97 @@
+- name: create backup user
+  user:
+    name: "{{ foundry_backup_user }}"
+    groups: "{{ foundry_group }}"
+    system: yes
+    append: yes
+    shell: /bin/false
+    state: present
+    home: "/home/{{ foundry_backup_user }}"
+  become: yes
+
+- name: create backup tool directory
+  file:
+    path: "{{ foundry_backup_tool_path }}"
+    state: directory
+    owner: "{{ foundry_backup_user }}"
+    group: "{{ foundry_group }}"
+    mode: 0755
+  become: yes
+
+- name: copy requirements file
+  copy:
+    src: requirements.txt
+    dest: "{{ foundry_backup_tool_path }}/requirements.txt"
+    owner: "{{ foundry_backup_user }}"
+    group: "{{ foundry_group }}"
+    mode: 0644
+  become: yes
+
+- name: install system packages
+  package:
+    name:
+      - python3
+      - python3-venv
+    state: present
+  become: yes
+
+- name: create virtual env and install pip into it
+  pip:
+    name: ['pip', 'setuptools']
+    state: latest
+    virtualenv: "{{ foundry_backup_tool_path }}/venv"
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: yes
+  become_user: "{{ foundry_backup_user }}"
+
+- name: install requirements
+  pip:
+    requirements: "{{ foundry_backup_tool_path }}/requirements.txt"
+    virtualenv: "{{ foundry_backup_tool_path }}/venv"
+  become: yes
+  become_user: "{{ foundry_backup_user }}"
+
+- name: copy backup script
+  copy:
+    src: spacesbackup.py
+    dest: "{{ foundry_backup_tool_path }}/spacesbackup.py"
+    owner: "{{ foundry_backup_user }}"
+    group: "{{ foundry_group }}"
+    mode: 0755
+  become: yes
+
+- name: create backup config
+  template:
+    src: spacesbackup.ini.j2
+    dest: /etc/spacesbackup.ini
+    mode: 0644
+  become: yes
+
+- name: create secrets env file
+  template:
+    src: spacesbackup.env.j2
+    dest: "/home/{{ foundry_backup_user }}/.env"
+    mode: 0600
+    owner: "{{ foundry_backup_user }}"
+    group: "{{ foundry_group }}"
+  become: yes
+
+- name: copy backup service file
+  template:
+    src: spacesbackup.service.j2
+    dest: /etc/systemd/system/spacesbackup.service
+  become: yes
+
+- name: copy backup service timer
+  copy:
+    src: spacesbackup.timer
+    dest: /etc/systemd/system/spacesbackup.timer
+  become: yes
+
+- name: enable backups
+  systemd:
+    name: spacesbackup.timer
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+  when: foundry_space_key|length > 0
