@@ -56,3 +56,18 @@ To install ansible, activate a virtual environment and run `make pip`.
 Ensure that `ansible` variables are set (see [above](#environment-variables) and run `make ansible`.
 
 **NOTE:** The ansible hosts file will be generated using output from terraform.
+
+## Restoring FoundryVTT Data
+
+The foundry role contains a script to deploy and schedule a backup agent.
+
+In order to restore from a backup, ssh onto an instance and run:
+
+```sh
+export SPACES_ACCESS_KEY_ID=<ACCESS_KEY>  # spaces access key
+export SPACES_SECRET_ACCESS_KEY=<SECRET>  # spaces access secret
+/usr/local/spacesbackup/venv/bin/python3 /usr/local/spacesbackup/spacesbackup.py --restore=<KEY>  # spaces item key
+chown foundry:foundry -R /home/foundry/FoundryVTT/Data
+systemctl restart foundryvtt.service
+```
+
