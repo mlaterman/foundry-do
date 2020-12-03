@@ -62,7 +62,7 @@ class BackupClient(object):
 
         session = boto3.session.Session()
         self.bclient = session.client('s3', region_name=config['space']['region'], endpoint_url=config['space']['url'],
-                aws_access_key_id=os.getenv('SPACES_KEY'), aws_secret_access_key=os.getenv('SPACES_SECRET'))
+                aws_access_key_id=os.getenv('SPACES_ACCESS_KEY_ID'), aws_secret_access_key=os.getenv('SPACES_SECRET_ACESS_KEY'))
 
     def backup(self):
         """backup creates and uploads a tar.gz file with data from the configured directory.

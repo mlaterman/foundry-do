@@ -9,16 +9,13 @@ plan: configure
 apply:
 	cd terraform/vtt; terraform apply terraform.plan
 
-venv:
-	python3 -m venv venv
-
-pip: venv
-	source venv/bin/activate; pip3 install -r requirements.txt
+pip:
+	pip3 install -r requirements.txt
 
 hosts:
 	bash genhosts.sh
 
 ansible: hosts
-	ansible-playbook -i hosts --extra-vars="certbot_email=${EMAIL}" --extra-vars="foundry_key=${FOUNDRY_ADMIN_KEY}" --extra-vars="foundry_space_key=${SPACES_ACCESS_KEY_ID}" --extra-vars="foundry_space_secret=${SPACES_SECRET_ACCESS_KEY}" foundry.yml
+	ansible-playbook -i hosts --extra-vars="certbot_email=${EMAIL}" --extra-vars="foundry_key=${FOUNDRY_ADMIN_KEY}" --extra-vars="foundry_backup_space_key=${BACKUP_ACCESS_KEY_ID}" --extra-vars="foundry_backup_space_secret=${BACKUP_SECRET_ACCESS_KEY}" foundry.yml
 
 .PHONY: default configure plan apply pip hosts ansible

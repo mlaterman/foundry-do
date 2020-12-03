@@ -14,36 +14,45 @@ Daily backups of Foundry's (user) data directory will be taken and pushed into a
   * Add an SSH key
   * Generate an access token and spaces tokens
 * A Foundry license
+* Python3 and pip3 installed
 * [terraform](https://www.terraform.io/downloads.html) v0.13.5+ installed
 * A [Terraform Cloud](https://app.terraform.io/) account
-* Python3 and pip3 installed
 
 ## Setup
 
-1. Change values in `terraform/deployment/backend.tfvars` to reflect your (terraform cloud) org and workspace, and `terraform/deployment/variables.tfvars` as needed (i.e, SSH allowlist)
-1. Login to Terrafrom Cloud with `terrafrom login`
-1. Set the env var `DIGITALOCEAN_TOKEN` to an access token to your Digital Ocean account, and `SPACES_ACCESS_KEY_ID` and `SPACES_SECRET_ACCESS_KEY` to the spaces access keys.
-1. Set the env var `DOMAIN` to the your domain, and `FOUNDRY_ADMIN_KEY` to the administration key you would like to use with foundry.
-1. Set the env var `EMAIL` to your email address (used for certbot registration).
 1. Download FoundryVTT for Node and put it in this folder, with `foundry.yml`.
+1. Run `./setup.sh` to ensure terraform is installed/logged in and to create an environment file.
+1. Run `source .env` to use the environment file.
+1. Change values in `terraform/deployment/backend.tfvars` to reflect your (terraform cloud) org and workspace, and `terraform/deployment/variables.tfvars` as needed (domain, SSH allowlist, etc.).
+1. Plan the terraform changes by running `make plan`, this shows the changes that will occur on Digital Ocean.
+1. Apply the terrafrom changes by running `make apply`, this creates the resources on Digital Ocean.
+1. Active the python virtual environment by running `source venv/bin/activate`.
+1. Install python requirements by running `make pip`
+1. Install/configure FoundryVTT on the droplet by running `make ansible`
 
-## Deployment
+### Environment Variables
 
-To deploy a new space, and droplet with firewalls to Digital Ocean:
+The `.env` file created exports the following:
 
-1. Run `make plan`
-1. Run `make apply`
+| variable                | stage   | use                                        |
+|-------------------------|---------|--------------------------------------------|
+| DIGITALOCEAN_TOKEN      | deploy  | API token to deploy resources              |
+| SPACES_ACCESS_KEY_ID    | deploy  | Spaces key to create a space               |
+| SPACES_SECRET_ACESS_KEY | deploy  | Spaces secret to create a space            |
+| BACKUP_ACCESS_KEY_ID    | ansible | Spaces key used by backup agent            |
+| BACKUP_SECRET_ACESS_KEY | ansible | Spaces secret used by backup agent         |
+| EMAIL                   | ansible | email for (HTTPS) certificate registration |
+| FOUNDRY_ADMIN_KEY       | ansible | FoundryVTT admin password                  |
 
-## Install and Configure
+`deploy` variables are required for terraform.
+`ansible` variables are required for ansible.
 
-Ansible is used to install Foundry, certbot, and nginx onto the droplet.
+## Ansible
 
-To install ansible into a virtual environment run `make pip`.
+Ansible is used to install nginx, certbot, FoundryVTT, and a backup agent onto the droplet.
 
-Ensure that spaces credentials are set in the environment, as well as the `FOUNDRY_ADMIN_KEY`, then run `make ansible`.
+To install ansible, activate a virtual environment and run `make pip`.
 
-**BEST PRACTICE:** Change the Spaces credentials in the environment variable to one dedicated for the droplet.
+Ensure that `ansible` variables are set (see [above](#environment-variables) and run `make ansible`.
 
-## TODO
-
-3. provide better way of gathering user variables
+**NOTE:** The ansible hosts file will be generated using output from terraform.

@@ -94,4 +94,4 @@
     enabled: yes
     daemon_reload: yes
   become: yes
-  when: foundry_space_key|length > 0
+  when: foundry_backup_space_key|length > 0
