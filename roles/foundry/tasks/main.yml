@@ -101,6 +101,19 @@
   become: yes
   notify: restart foundry
 
+- name: ensure logrotate is installed
+  package:
+    name: logrotate
+    state: present
+  become: yes
+
+- name: configure foundry log rotation
+  template:
+    src: logrotate.j2
+    dest: /etc/logrotate.d/foundryvtt
+    mode: 0644
+  become: yes
+
 - name: enable foundry
   systemd:
     name: foundryvtt.service

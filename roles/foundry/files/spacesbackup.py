@@ -84,7 +84,6 @@ class BackupClient(object):
         finally:
             os.remove(bfile)
         logging.info('Backup successful.')
-        self._clean()
 
     def restore(self, key):
         """restore will restore data to the directory using the object located at key.
@@ -96,7 +95,7 @@ class BackupClient(object):
             with tarfile.open('/tmp/restore.tar.gz', 'r:gz') as tar:
                 tar.extractall(path=self._directory)
         except Exception as e:
-            logging.error('Unable to unpack archive.')
+            logging.error('Unable to unpack archive. Down present at /tmp/restore.tar.gz')
             raise e
         logging.info('Restore successful.')
         os.remove('/tmp/restore.tar.gz')
