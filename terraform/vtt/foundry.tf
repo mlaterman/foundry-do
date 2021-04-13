@@ -13,6 +13,11 @@ resource "digitalocean_domain" "foundry" {
   ip_address = digitalocean_droplet.foundry.ipv4_address
 }
 
+resource "digitalocean_domain" "subdomain-foundry" {
+  name       = "city.${var.domain}"
+  ip_address = digitalocean_droplet.foundry.ipv4_address
+}
+
 resource "digitalocean_firewall" "foundry" {
   name        = "ssh-and-web"
   droplet_ids = [digitalocean_droplet.foundry.id]

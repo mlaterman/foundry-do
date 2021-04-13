@@ -7,7 +7,7 @@ After=foundryvtt.service
 Type=simple
 EnvironmentFile=/home/{{ foundry_backup_user }}/.env
 WorkingDirectory={{ foundry_backup_tool_path}}
-ExecStart={{ foundry_backup_tool_path}}/venv/bin/python3 {{ foundry_backup_tool_path}}/spacesbackup.py --backup
+ExecStart={{ foundry_backup_tool_path}}/venv/bin/python3 {{ foundry_backup_tool_path}}/spacesbackup.py --backup --config-file /etc/{{ foundry_backup_file }}
 User={{ foundry_backup_user }}
 Group={{ foundry_group }}
 

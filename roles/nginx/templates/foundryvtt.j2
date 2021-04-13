@@ -1,5 +1,6 @@
 # {{ ansible_managed }}
 
+# Normal server
 # Redirect HTTP to HTTPS
 server {
   server_name {{ nginx_domain }};
@@ -24,5 +25,33 @@ server {
     proxy_set_header Connection "Upgrade";
 
     proxy_pass http://localhost:30000;
+  }
+}
+
+# City server
+# Redirect HTTP to HTTPS
+server {
+  server_name city.{{ nginx_domain }};
+  listen      80;
+  return      301 https://city.{{ nginx_domain }}$request_uri;
+}
+
+# Redirect to foundry
+server {
+  server_name           city.{{ nginx_domain }};
+  listen                443 ssl;
+  ssl_certificate       "{{ nginx_cert_path }}/{{ nginx_domain }}/fullchain.pem";
+  ssl_certificate_key   "{{ nginx_cert_path }}/{{ nginx_domain }}/privkey.pem";
+
+  client_max_body_size 300M;
+
+  location / {
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwared-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+
+    proxy_pass http://localhost:30001;
   }
 }

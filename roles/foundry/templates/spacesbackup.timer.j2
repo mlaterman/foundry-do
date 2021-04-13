@@ -3,7 +3,7 @@ Description=Run spaces backup each day
 Requires=spacesbackup.service
 
 [Timer]
-Unit=spacesbackup.service
+Unit={{ foundry_backup_service_name }}.service
 OnUnitInactiveSec=24h
 AccuracySec=1s
 

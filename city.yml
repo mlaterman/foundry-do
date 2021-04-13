@@ -1,0 +1,12 @@
+- hosts: foundry
+  vars:
+    foundry_user: cityvtt
+    foundry_domain: "city.{{ domain }}"
+    foundry_port: 30001
+    foundry_service_name: cityvtt
+    foundry_backup_path: cityvtt
+    foundry_backup_file: cityvtt.ini
+    foundry_backup_service_name: cityspacesbackup
+  roles:
+    - foundry
+

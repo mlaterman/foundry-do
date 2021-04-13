@@ -63,7 +63,7 @@
 - name: create backup config
   template:
     src: spacesbackup.ini.j2
-    dest: /etc/spacesbackup.ini
+    dest: /etc/{{ foundry_backup_file }}
     mode: 0644
   become: yes
 
@@ -79,18 +79,18 @@
 - name: copy backup service file
   template:
     src: spacesbackup.service.j2
-    dest: /etc/systemd/system/spacesbackup.service
+    dest: "/etc/systemd/system/{{ foundry_backup_service_name }}.service"
   become: yes
 
 - name: copy backup service timer
-  copy:
-    src: spacesbackup.timer
-    dest: /etc/systemd/system/spacesbackup.timer
+  template:
+    src: spacesbackup.timer.j2
+    dest: "/etc/systemd/system/{{ foundry_backup_service_name }}.timer"
   become: yes
 
 - name: enable backups
   systemd:
-    name: spacesbackup.timer
+    name: "{{ foundry_backup_service_name }}.timer"
     enabled: yes
     daemon_reload: yes
   become: yes

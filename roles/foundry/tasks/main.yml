@@ -46,16 +46,6 @@
     state: latest
   become: yes
 
-- name: unachive foundry
-  unarchive:
-    src: "/tmp/{{ foundry_file }}"
-    dest: "{{ foundry_dir }}"
-    remote_src: yes
-    owner: "{{ foundry_user }}"
-    group: "{{ foundry_group }}"
-  become: yes
-  notify: restart foundry
-
 - name: create foundry user data dir
   file:
     path: "/home/{{ foundry_user }}/FoundryVTT"
@@ -97,7 +87,7 @@
 - name: copy service file
   template:
     src: foundryvtt.service.j2
-    dest: /etc/systemd/system/foundryvtt.service
+    dest: "/etc/systemd/system/{{ foundry_service_name }}.service"
   become: yes
   notify: restart foundry
 
@@ -116,7 +106,7 @@
 
 - name: enable foundry
   systemd:
-    name: foundryvtt.service
+    name: "{{ foundry_service_name }}.service"
     enabled: yes
     daemon_reload: yes
   become: yes

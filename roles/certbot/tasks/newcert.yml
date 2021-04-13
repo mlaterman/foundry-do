@@ -18,7 +18,7 @@
   become: yes
 
 - name: get certs
-  command: /snap/bin/certbot --nginx --agree-tos --email="{{ certbot_email }}" --domains="{{ certbot_domain }}" -n
+  command: /snap/bin/certbot --nginx --agree-tos --email="{{ certbot_email }}" --domains="{{ certbot_domain }},city.{{ certbot_domain }}" -n
   args:
     creates: "/etc/letsencrypt/live/{{ certbot_domain }}//fullchain.pem"
   when: not cert.stat.exists
