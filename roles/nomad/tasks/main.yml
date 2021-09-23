@@ -1,0 +1,30 @@
+- name: create nomad group
+  group:
+    name: "{{ nomad_group }}"
+    system: yes
+    state: present
+  become: yes
+
+- name: create nomad user
+  user:
+    name: "{{ nomad_user }}"
+    groups: ["{{ nomad_group }}", "docker"]
+    system: yes
+    append: yes
+    shell: /bin/false
+    state: present
+  become: yes
+
+- name: install prereqs
+  package:
+    name:
+      - unzip
+      - gzip
+    state: present
+  become: yes
+
+- name: Download nomad binary
+  get_url:
+    url: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip
+    checksum: {{ nomad_checksum }}
+    dest: /tmp/nomad_{{ nomad_verion }}_linux_amd64.zip

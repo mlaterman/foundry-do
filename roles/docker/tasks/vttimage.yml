@@ -1,0 +1,20 @@
+- name: create foundry build dir
+  file:
+    path: /tmp/vtt
+    state: directory
+
+- name: Copy Dockerfile
+  copy:
+    src: Dockerfile.Foundry
+    dest: /tmp/vtt/Dockerfile
+    mode: 0644
+
+- name: Build foundry-vtt image
+  docker_image:
+    build:
+      pull: no
+      path: /tmp/vtt/
+    source: build
+    name: foundry-vtt
+    tag: latest
+  become: yes

@@ -1,14 +1,6 @@
-- hosts: foundry
+- hosts: all
   vars:
-    nginx_domain: "{{ domain }}"
-    certbot_domain: "{{ domain }}"
-    foundry_domain: "{{ domain }}"
-  pre_tasks:
-    - copy:
-        src: "./{{ foundry_file }}"
-        dest: "/tmp/{{ foundry_file }}"
+    foundry_file: foundryvtt-0.8.9.zip // needs to be in /tmp/vtt on remote host
   roles:
     - base
-    - nginx
-    - certbot
-    - foundry
+    - docker

@@ -1,0 +1,4 @@
+nomad_user: nomad
+nomad_group: nomad
+nomad_version: 1.1.4
+nomad_checksum: 735790c3664f89dfcc3cadfec8c421d812b00516425ca5aa186b58b82c6f3e1f

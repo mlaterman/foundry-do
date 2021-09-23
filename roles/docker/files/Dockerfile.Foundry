@@ -1,0 +1,24 @@
+FROM node:14-alpine
+
+ENV FOUNDRY_HOME=/home/foundry/app
+ENV FOUNDRY_DATA=/home/foundry/data
+
+ARG FOUNDRY_VERSION=0.8.9
+
+RUN deluser node && \
+    adduser -D foundry
+    
+USER foundry
+
+RUN mkdir -p $FOUNDRY_HOME && \
+    mkdir -p $FOUNDRY_DATA
+
+WORKDIR $FOUNDRY_HOME
+
+COPY ./foundryvtt-${FOUNDRY_VERSION}.zip . 
+
+RUN unzip foundryvtt-${FOUNDRY_VERSION}.zip && \
+    rm foundryvtt-${FOUNDRY_VERSION}.zip 
+
+EXPOSE 3000
+CMD ["node", "${FOUNDRY_HOME}/resources/app/main.js", "--headless", "--dataPath=${FOUNDRY_DATA}"]
